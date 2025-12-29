@@ -1,3 +1,13 @@
+notebooks/
+tmp/
+*.ipynb
+**/.ipynb_checkpoints/**
+*.png
+*.npy
+*.pkl
+*.zip
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
