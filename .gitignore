@@ -1,11 +1,21 @@
+data/
 notebooks/
 tmp/
 *.ipynb
 **/.ipynb_checkpoints/**
-*.png
+
+# non-text files
 *.npy
+*.npyz
 *.pkl
+*.png
+*.gif
+*.jpg
+*.jpeg
 *.zip
+*.tar.gz
+*.h5
+*.hdf5
 
 
 # Byte-compiled / optimized / DLL files
