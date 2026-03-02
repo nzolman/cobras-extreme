@@ -2,14 +2,15 @@ import jax
 jax.config.update("jax_enable_x64", True)
 
 import jax.numpy as jnp
-from waves import MNLS1D, NLS1D
-
-from solver_step import iterative_func
 from jax import grad, jit
 from jax import random, lax, vmap
 
-from mnls_utils import amplitude_hat
 from cobras_extreme import _mnls_data_dir
+from cobras_extreme.mnls.waves import MNLS1D
+from cobras_extreme.mnls.mnls_utils import amplitude_hat
+from cobras_extreme.mnls.solver_step import iterative_func
+
+USE_REFINED = True
 
 # Default params
 N = 2**10
@@ -17,6 +18,12 @@ L = 256 * jnp.pi
 Tf = 400
 dt = 0.025
 frac = 2/3
+
+if USE_REFINED:
+    # Refined params
+    N *= 2
+    dt /= 2
+
 solver = MNLS1D(N, L, dt, M_contour=128, dealias_frac = frac)
 
 num_steps = int(Tf/dt)
@@ -51,7 +58,11 @@ if __name__ == '__main__':
     n_batches = num_samples // batch_size
     
     seeds = jnp.arange(num_samples)
+    
     data_dir = os.path.join(_mnls_data_dir, f'forward_Tf_{Tf}')
+    if USE_REFINED:
+        data_dir += '_refined'
+
     os.makedirs(data_dir, exist_ok=True)
     
     for i in tqdm(range(n_batches)):
