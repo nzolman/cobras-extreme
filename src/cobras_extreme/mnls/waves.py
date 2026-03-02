@@ -302,13 +302,17 @@ class MMT(PseudoSpectralSolver1DBase):
         
         Rearranging: ∂u/∂t = -i|∂_x|^α u  - iλ (|u|^2 u) + Du
         
-        The only linear piece is the selective laplace term: 
+        The only linear pieces are the fractional dispersion term:
+        |∂_x|^α, whose Fourier symbol is |k|^α,
+        and the selective laplace term 
             \hat (Du)(k) = -(|k| - k_{crit})^2 \hat u(k),   |k| > k_crit
                                                             and 0 otherwise
         '''
 
         k_mask = jnp.abs(self.k2pi) > self.k_crit
-        self.L_hat = -(1/2.0)*self.Dx_hat -(1j/8.0)*(self.Dx_hat)**2 + (1/16) * (self.Dx_hat) **3
+        
+        selective_laplacian = -1 * (jnp.abs(self.k2pi) - self.k_crit)**2 * k_mask
+        self.L_hat = -1j * jnp.abs(self.k2pi)**self.alpha  + selective_laplacian
         
 
     def nonlinear_term(self, u_hat):
@@ -325,22 +329,18 @@ class MMT(PseudoSpectralSolver1DBase):
             Nonlinear term in physical space
         """
         # Compute derivatives in Fourier space (ordinary frequency)
+        u_hat = self._dealias(u_hat)
         u = jnp.fft.ifft(u_hat)
-        dx_alpha_hat = jnp.abs(self.Dx_hat)**self.alpha
-        term1_hat =  (-1j) * dx_alpha_hat *  u_hat
-        
-        # TO-DO: dealias
-        term1 = jnp.fft.ifft(term1_hat)
         
         # Nonlinear terms
         u_abs_sq = jnp.abs(u)**2
         
-        term2 = -(1j) * self.lambda_coef * u_abs_sq * u
-        
-        N_u = term1 + term2
+        N_u = -(1j) * self.lambda_coef * u_abs_sq * u
+        N_u_hat = self._dealias(jnp.fft.fft(N_u))
         
         
         # TO-DO: dealias. Can probably just be done
         # in the step_fn
         
-        return N_u + self.control
+        control_hat = jnp.fft.fft(self.control)
+        return N_u_hat + control_hat
