@@ -118,7 +118,7 @@ def train_svm_classifier(z, labels,
         'n_iter': svm.n_iter_[0],
     }
     if return_svm: 
-        return metrics, svm
+        return metrics, svm, scaler
     else:
         return metrics
     

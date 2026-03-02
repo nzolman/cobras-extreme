@@ -49,3 +49,59 @@ def periodic_tent_partition_of_unity(x, a, b, K):
 
     return w, centers
 
+
+
+def periodic_channelwise_correlation_fft_batched(u, psi):
+    """
+    Computes channel-wise periodic correlation:
+        (psi_i ⋆ u_k)_j(x_n) = ∫ u_k,j(y) psi_i,j(y - x_n) dy
+
+    Parameters
+    ----------
+    u : array, shape (T, N, 2)
+        Batch of T signals.
+    psi : array, shape (N, r, 2)
+        Bank of r filters.
+    dx : float
+        Grid spacing.
+
+    Returns
+    -------
+    corr : array, shape (T, N, r, 2)
+        corr[k, n, i, j] = (ψ_i,j ⋆ u_k,j)(x_n)
+    """
+
+    T, N, C = u.shape
+    # assert C == 2
+
+    # --- IMPORTANT ---
+    # Flip psi along the spatial axis to match ψ(y - x)
+    psi_flipped = jnp.flip(psi, axis=0)   # (N, r, 2)
+
+    # FFT along spatial axes
+    U = jnp.fft.fft(u, axis=1)                 # (T, N, 2)
+    Psi = jnp.fft.fft(psi_flipped, axis=0)     # (N, r, 2)
+
+    # Rearrange psi to (r, N, 2)
+    Psi = Psi.transpose(1, 0, 2)
+
+    # Broadcast:
+    #   U_b:   (1, T, N, 2)
+    #   Psi_b: (r, 1, N, 2)
+    U_b   = U[None, ...]
+    Psi_b = Psi[:, None, ...]
+
+    # CORRELATION: multiply by conjugate of Psi
+    F_corr = jnp.conj(Psi_b) * U_b            # (r, T, N, 2)
+
+    # Inverse FFT along spatial axis (-2)
+    corr = jnp.fft.ifft(F_corr, axis=-2).real # (r, T, N, 2)
+
+    # reorder to (T, N, r, 2)
+    corr = corr.transpose(1, 2, 0, 3)
+
+    return corr
+
+def recon_from_z(tens_fns, z_local, shifted_phi_complex, n_modes):
+    recon = jnp.einsum('cx,tcr,cxr->tx', tens_fns, z_local[...,:n_modes], shifted_phi_complex[..., :n_modes])
+    return recon

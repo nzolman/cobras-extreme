@@ -6,7 +6,8 @@ from cobras_extreme import _kflow_data_dir
 def load_snaps(Re=40, res=256, return_real = False, snap_idx = jnp.array([0])):
     fwd_data_dir = os.path.join(_kflow_data_dir, 'forward')
     fname = f'kolmogorov_n={res}-Re={Re}_k=4_end=5000_save=0.5.npy'
-    snap_hat_data = jnp.load(os.path.join(fwd_data_dir, fname), allow_pickle=True)[snap_idx]
+    snap_hat_data = jnp.load(os.path.join(fwd_data_dir, fname), 
+                             allow_pickle=True)[snap_idx]
     
     if return_real:
         return jnp.fft.irfft2(snap_hat_data, axes=(-2,-1))
