@@ -18,6 +18,20 @@ def get_phi_psi(X, Y, U, S, Vh, r):
     
     return Phi, Psi
 
+
+def get_modes(x_real, g_real, r = 20): 
+    n_grad = x_real.shape[0]
+    n_snap = g_real.shape[0]
+    Y_cobras = 1/jnp.sqrt(n_grad) * g_real.T
+    X_cobras = 1/jnp.sqrt(n_snap) * x_real.T
+
+    cobras_balance = Y_cobras.T @ X_cobras
+
+    U_cobras, S_cobras, Vh_cobras = jnp.linalg.svd(cobras_balance, full_matrices = False)
+    Phi_cobras, Psi_cobras = get_phi_psi(X_cobras, Y_cobras, U_cobras, S_cobras, Vh_cobras, r=r)
+    
+    return {'Phi': Phi_cobras, 'Psi': Psi_cobras, 'S': S_cobras}
+
 if __name__ == "__main__":
     # Example usage
     n_grad = 100
