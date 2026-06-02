@@ -1,3 +1,4 @@
+import os
 import jax
 jax.config.update("jax_enable_x64", True)
 
@@ -13,36 +14,20 @@ key_init, key_cotangents = random.split(key,2)
 from diffrax import diffeqsolve, ODETerm, Dopri5, SaveAt, PIDController
 from diffrax import TqdmProgressMeter
 
-def setup_fwd(N, k=0.128):
+from cobras_extreme import _fhn_data_dir
+from cobras_extreme.fhn.fhn import setup_FCN
 
-    a = -0.02651
-    c= 0.02 
+N = 10001
 
-    ns = jnp.arange(N)
-
-    bs = 0.006 + ns/(N-1)*0.008 
-    K =  k / (N-1)
-
-
-    def f(z): 
-        x = z[:N]
-        y = z[N:]
-        
-        dx = x*(a-x)*(x-1) - y + K*(x.sum() - N*x)
-        dy = bs*x - c*y
-        return jnp.concatenate([dx, dy])
-
-    def f_diffrax(t, y, args):
-        return f(y)
-    
-    return f_diffrax
-
+# LOAD_PATH = None
+LOAD_PATH = os.path.join(_fhn_data_dir, 
+                      f'fhn_{N}_forward_long.npy')
 
 
 progress_meter = TqdmProgressMeter(refresh_steps = 100)
 
-N = 101
-f_diffrax = setup_fwd(N=N)
+
+f_diffrax = setup_FCN(N=N)
 
 x0_strength = 0.5
 x0 = random.uniform(key_init, shape=(2*N,), minval=-1, maxval=1) * x0_strength
@@ -62,37 +47,45 @@ stepsize_controller = PIDController(rtol=tol, atol=tol, dtmax=maxdt0, dtmin=1e-5
 base_max_steps = int(Tf/dt0)
 max_steps = 10*base_max_steps
 
+if (LOAD_PATH is None) or (not os.path.exists(LOAD_PATH)):
+    # Gen forward data
+    print('Starting forward solve...')
+    saveat = SaveAt(ts=jnp.arange(0, Tf))
+    sol = diffeqsolve(term, solver, t0=0, t1=Tf, 
+                    dt0=dt0, y0=x0, saveat=saveat, 
+                    stepsize_controller=stepsize_controller, max_steps=max_steps, 
+                    progress_meter=progress_meter)
 
-# Gen forward data
-saveat = SaveAt(ts=jnp.arange(0, Tf))
-sol = diffeqsolve(term, solver, t0=0, t1=Tf, 
-                  dt0=dt0, y0=x0, saveat=saveat, 
-                  stepsize_controller=stepsize_controller, max_steps=max_steps, 
-                  progress_meter=progress_meter)
+    xs = sol.ys
+    ts = sol.ts
 
-xs = sol.ys
-ts = sol.ts
+    print('Saving forward solve...')
+    jnp.save(os.path.join(_fhn_data_dir, 
+                        f'fhn_{N}_forward_long.npy'), 
+            xs)
 
-
+else:
+    print('Loading forward data...')
+    xs = jnp.load(LOAD_PATH)
 
 # setup forward + backward data
-Tf_fwd = 200
+Tf_fwd = 100
 Tf_dataset = int(1e5)
 
 save_dt = 1
-N = 101
-f_diffrax = setup_fwd(N, k=0.128)
-
+f_diffrax = setup_FCN(N, k=0.128)
 
 saveat_fwd = SaveAt(ts=jnp.arange(0, Tf_fwd, save_dt))
 
-
 from jax import vmap
-
 
 # qoi at time t
 def qoi_t(x):
+    x_std = x[:N].std()
+    y_std = x[N:].std()
+    
     return jnp.mean(x**2)
+    # return x_std**2 + y_std**2
 
 qoi_v = vmap(qoi_t, in_axes=(0,))
 
@@ -154,10 +147,11 @@ key = random.split(key)[0]
 
 all_x0s = xs[::len(xs)//num_samples]
 
-batch_size = 10
+batch_size = 5
 n_batches = num_samples // batch_size
 
 
+print('Starting backwards solves...')
 all_grad_data = []
 for i in tqdm(range(n_batches)):
     cots = cotangets[i*batch_size:(i+1)*batch_size]
@@ -169,3 +163,10 @@ for i in tqdm(range(n_batches)):
     
 all_grad_data = jnp.array(all_grad_data)
 all_grad_data = jnp.concatenate(all_grad_data)
+
+
+print('Saving backwards solves...')
+jnp.save(os.path.join(_fhn_data_dir, 
+                    #   f'fhn_{N}_grad_std_Tf={Tf_fwd}.npy'), 
+                        f'fhn_{N}_grad_square_Tf={Tf_fwd}.npy'), 
+         all_grad_data)
