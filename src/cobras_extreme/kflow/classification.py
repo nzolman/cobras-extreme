@@ -1,6 +1,7 @@
 # import jax.numpy as jnp
 import numpy as np
 from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.metrics import roc_auc_score, average_precision_score, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 
