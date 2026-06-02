@@ -1,0 +1,5 @@
+jax[cpu]>=0.4.25
+flax>=0.8.2
+optax>=0.2.2
+numpy>=1.26
+matplotlib>=3.8
