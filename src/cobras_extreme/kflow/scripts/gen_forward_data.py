@@ -16,7 +16,7 @@ import equations.base as base
 from solvers import transient
 
 
-from cobras_extreme import _kflow_dir, _data_dir
+from cobras_extreme import _kflow_dir
 root_dir = _kflow_dir
 
 if __name__ == '__main__': 
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     save_name = f'kolmogorov_n={int(n)}-Re={int(flow.Re)}_k={k}_end={int(end_time)}_save={save_time}'
 
-    save_path = os.path.join(_data_dir, 'forward', save_name)
+    save_path = os.path.join(_kflow_dir, 'forward', save_name)
     print("Saving to: ", save_path)
 
     vorticity_hat0 = flow.initialize_state()

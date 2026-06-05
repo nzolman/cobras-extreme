@@ -19,7 +19,7 @@ gpu_device = jax.devices('gpu')[0]
 
 from cobras_extreme.kflow.data_utils import get_flow, backward_parser, get_backwards_fn, get_forward_fn
 
-from cobras_extreme import _kflow_dir, _data_dir
+from cobras_extreme import _kflow_dir
 root_dir = _kflow_dir
 
 
@@ -58,13 +58,13 @@ if __name__ == '__main__':
     
     
 
-    load_path = os.path.join(_data_dir,
+    load_path = os.path.join(_kflow_dir,
                              'forward', 
                              load_name
                              )
     print("Loading from: ", load_path)
     
-    save_dir = os.path.join(_data_dir,
+    save_dir = os.path.join(_kflow_dir,
                              'backward',
                              save_dir_name)
     print("Saving to: ", save_dir)
