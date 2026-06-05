@@ -1,0 +1,12 @@
+diffrax==0.7.0
+flax==0.12.5
+jax==0.6.0
+jaxlib==0.6.0
+jaxtyping==0.2.38
+lineax==0.0.8
+optax==0.2.6
+numpy==2.4.3
+scikit-learn==1.5.2
+matplotlib==3.9.2
+tqdm==4.66.5
+SciencePlots==2.2.0
