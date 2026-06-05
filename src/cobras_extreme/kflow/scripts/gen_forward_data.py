@@ -11,13 +11,14 @@ jax.config.update("jax_enable_x64", True)
 import jax.numpy as jnp
 
 from cobras_extreme.kflow.data_utils import forward_parser, get_flow
+from cobras_extreme import _kflow_data_dir
 
 import equations.base as base
 from solvers import transient
 
 
-from cobras_extreme import _kflow_dir
-root_dir = _kflow_dir
+
+
 
 if __name__ == '__main__': 
     # parse args and convert to dict
@@ -35,7 +36,7 @@ if __name__ == '__main__':
 
     save_name = f'kolmogorov_n={int(n)}-Re={int(flow.Re)}_k={k}_end={int(end_time)}_save={save_time}'
 
-    save_path = os.path.join(_kflow_dir, 'forward', save_name)
+    save_path = os.path.join(_kflow_data_dir, 'forward', save_name)
     print("Saving to: ", save_path)
 
     vorticity_hat0 = flow.initialize_state()
