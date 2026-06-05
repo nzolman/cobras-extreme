@@ -266,7 +266,7 @@ class MNLS1D(PseudoSpectralSolver1DBase):
 
 
 class MMT(PseudoSpectralSolver1DBase):
-    '''MMT from Cousins & Sapsis (2014) [1]
+    r'''MMT from Cousins & Sapsis (2014) [1]
     
         i∂u/∂t = |∂_x|^α u + λ |∂_x|^{−β/4} (||∂_x|^{−β/4} u|^2 |∂_x|^{−β/4} u) + iDu
         
@@ -298,7 +298,7 @@ class MMT(PseudoSpectralSolver1DBase):
         super().__init__(N_grid, L_domain, dt, M_contour,dealias_frac=dealias_frac, real=False)
 
     def _init_linear_operator(self):
-        '''Linear operator in Fourier space. 
+        r'''Linear operator in Fourier space. 
         
         Rearranging: ∂u/∂t = -i|∂_x|^α u  - iλ (|u|^2 u) + Du
         
@@ -316,7 +316,7 @@ class MMT(PseudoSpectralSolver1DBase):
         
 
     def nonlinear_term(self, u_hat):
-        """
+        r"""
         Compute nonlinear terms N(u) in physical space.
         
         N(u) = -i|∂_x|^α u  - iλ (|u|^2 u)
