@@ -8,7 +8,6 @@ from jax import lax
 
 import glob
 
-import cobras_extreme
 from cobras_extreme import _kflow_data_dir
 fwd_data_dir = os.path.join(_kflow_data_dir, 'forward')
 grad_data_dir = os.path.join(_kflow_data_dir, 'backward')
@@ -16,7 +15,7 @@ proj_data_dir = os.path.join(_kflow_data_dir, 'projections')
 ker_data_dir = os.path.join(_kflow_data_dir, 'kernel')
 
 from equations.flow import FlowConfig
-from cobras_kflow.symm_utils import shift_sx_fft, get_fourier_idx
+from cobras_extreme.kflow.symm_utils import shift_sx_fft, get_fourier_idx
 
 
 def get_phi_psi(X, Y, U, S, Vh, r):
@@ -211,8 +210,6 @@ def get_projs(Re=40, Tf=4, res=256, N_train= 4000, n_modes = 20):
     return data
 
 if __name__ == '__main__': 
-    
-    from cobras_kflow import _data_dir
     import argparse
     from pprint import pprint
     parser = argparse.ArgumentParser('get linear cobras projections')

@@ -22,8 +22,8 @@ proj_data_dir = os.path.join(_kflow_data_dir, 'projections')
 ker_data_dir = os.path.join(_kflow_data_dir, 'kernel')
 
 from equations.flow import FlowConfig
-from cobras_kflow.symm_utils import shift_sx_fft, get_fourier_idx
-from cobras_kflow.kernel_utils import Y_star_Kx, Y_star_X, Y_star_X_v, K
+from cobras_extreme.kflow.symm_utils import shift_sx_fft, get_fourier_idx
+from cobras_extreme.kflow.kernel_utils import Y_star_Kx, Y_star_X, Y_star_X_v, K
 
 
 res=256
@@ -154,8 +154,6 @@ def get_ker(Re=40, Tf=4, res=256, N_train= 4000, n_modes = 20):
     return data
 
 if __name__ == '__main__': 
-    
-    from cobras_kflow import _data_dir
     import argparse
     from pprint import pprint
     parser = argparse.ArgumentParser('get kernel cobras projections')

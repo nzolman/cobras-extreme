@@ -17,10 +17,9 @@ from tqdm import tqdm
 cpu_device = jax.devices('cpu')[0]
 gpu_device = jax.devices('gpu')[0]
 
-from cobras_kflow.custom_flow import NoSymmCtrl
-from cobras_kflow.data_utils import get_flow, backward_parser, get_backwards_fn, get_forward_fn
+from cobras_extreme.kflow.data_utils import get_flow, backward_parser, get_backwards_fn, get_forward_fn
 
-from cobras_kflow import _kflow_dir, _data_dir
+from cobras_extreme import _kflow_dir, _data_dir
 root_dir = _kflow_dir
 
 

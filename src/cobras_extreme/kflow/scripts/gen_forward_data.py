@@ -10,14 +10,13 @@ import jax
 jax.config.update("jax_enable_x64", True)
 import jax.numpy as jnp
 
-from cobras_kflow.custom_flow import NoSymmCtrl
-from cobras_kflow.data_utils import forward_parser, get_flow
+from cobras_extreme.kflow.data_utils import forward_parser, get_flow
 
 import equations.base as base
 from solvers import transient
 
 
-from cobras_kflow import _kflow_dir, _data_dir
+from cobras_extreme import _kflow_dir, _data_dir
 root_dir = _kflow_dir
 
 if __name__ == '__main__': 
