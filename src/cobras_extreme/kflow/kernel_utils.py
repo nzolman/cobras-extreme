@@ -3,8 +3,7 @@ import os
 import jax.numpy as jnp
 import numpy as np
 
-'''
-This is purely for RBF kernel centered at zero.
+r'''This is purely for RBF kernel centered at zero.
 
 (Y^*K_x)_i = (1/sqrt(s_g)) * g_i^T G(x_i)^{-1} \nabla K_x(x_i)
 G(x_i)^-1 = beta(x_i) [I - gamma(x_i) x_i x_i^T ]
