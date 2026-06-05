@@ -13,4 +13,7 @@ _mnls_data_dir = os.path.join(_data_dir, 'mnls')
 
 sys.path.append(_kflow_dir)
 
-import equations, solvers
+try:
+    import equations, solvers
+except ImportError as e:
+    print('Error importing Kflow `equations` or `solvers`. Make sure you have the Controlling-Kolmogorov-Flow repo in the correct location and that it has been properly installed.')
