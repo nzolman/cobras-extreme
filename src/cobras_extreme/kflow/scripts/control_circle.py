@@ -30,15 +30,12 @@ Re=40
 Tf=4
 
 # cobras or pod
-MODES = 'pod' 
+MODES = 'cobras' 
 
 flow = FlowConfig(grid_size = (res,res), Re = Re)
 kx, ky = flow.create_fft_mesh()
 
 print('loading data...')
-# load snap data
-snap_hat_data = np.load(f'/home/nzolman/data/projects/cobras-kflow/data/forward/kolmogorov_n={res}-Re={Re}_k=4_end=5000_save=0.5.npy')
-print('data loaded')
 
 save_dir = os.path.join(_kflow_data_dir, 'ctrl', 'test')
 os.makedirs(save_dir, exist_ok=True)
