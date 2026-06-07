@@ -1,7 +1,7 @@
 from jax import numpy as jnp
 
-from seaborn import sns
-
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 colors = sns.color_palette("colorblind")
 
@@ -19,7 +19,8 @@ def pred_3D_test(solver, aligned_long, preds,
             x_ticks = None,
             x_bounds_nudge = 10,
             t_bounds_nudge = 10,
-            wire_lw = 1
+            wire_lw = 1,
+            show_grid = True,
             ):
     
     cobras_kwargs = dict(vmin = 2.5, vmax = 3.5, alpha = 0.5, zorder =0, s = 1)
@@ -76,6 +77,7 @@ def pred_3D_test(solver, aligned_long, preds,
                     labels = [f'{32*i}' + r'$\pi$' for i in range(9)])
 
     # Change gridline style 
+    
     for axis in [ax.xaxis, ax.yaxis, ax.zaxis]: 
         axis._axinfo['grid']['linestyle'] = '--' 
         axis._axinfo['grid']['linewidth'] = 0.8 
@@ -115,4 +117,5 @@ def pred_3D_test(solver, aligned_long, preds,
         color='black',
         linewidth=1.2
     )
+    ax.tick_params(axis='both', which='both', bottom=False, top=False, labelsize=15)
     return ax, fig
