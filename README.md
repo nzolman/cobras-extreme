@@ -31,6 +31,12 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
+If using GPUs, GPU-specific versions of `jax` should be installed, for example running `pip install -U "jax[cuda13]"` as suggested by the [JAX installation guide](https://docs.jax.dev/en/latest/installation.html). 
+
+Please note that out-of-memory (OOM) errors can occur on GPUs with limited VRAM if using the code directly. Batching is sometimes used in the codebase with `vmap` and `jax.lax.map`, but not always. If you run into OOM errors, consider adapting the code accordingly.
+
+_**Note**: it has been observed that different versions of JAX can provide slightly different datasets due to how random number generation is handled between versions. So running the code, and in particular the tutorials, may result in slightly different datasets. However, we have not noticed any qualitatively different results because of this variability._
+
 ## Tutorial
 A complete tutorial for the FitzHugh-Nagumo ($N=101$) example can be found in `tutorials/FHN.ipynb`. This tutorial is completely self-contained; it does not use reference anything else in the package except for plotting defaults, and does not require any external data. It was tested with an NVIDIA GeForce RTX 2080 Ti GPU and ran in just a few minutes with 64-bit precision. Note that we use a smaller dataset than what we used in the paper and that random seeds across different python/pacakge versions and computaitonal hardware can produce slightly different results.
 
