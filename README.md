@@ -3,6 +3,12 @@
 
 - Preprint: https://arxiv.org/abs/2606.05618
 
+## Video Abstract (YouTube)
+Click the thumbnail to watch an extensive overview of the method and results.
+
+<a href="https://www.youtube.com/watch?v=FC7wv7Lwme0">
+  <img src="https://img.youtube.com/vi/FC7wv7Lwme0/maxresdefault.jpg" alt="CoBRAS video abstract" width="300">
+</a>
 
 ## Abstract
 Extreme events---such as earthquakes and coronal mass ejections---are common in many chaotic dynamical systems, yet are difficult to characterize and predict due to the subtle instability mechanisms that drive them.  
